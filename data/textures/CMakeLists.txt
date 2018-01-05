@@ -1,0 +1,1 @@
+file(GLOB TEXTURES_FILES *.png)
