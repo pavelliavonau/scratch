@@ -1,9 +1,20 @@
 set(scratch_SRCS
         main.cpp
-        shader.cpp
+        render/shader.cpp
+        scene/scene.cpp
+        scene/sceneObject.cpp
+        scene/BlinkingTriangle.cpp
+        scene/TexturedBox.cpp
 )
 
-add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS})
+file(GLOB shaders_SRC
+    "../data/shaders/*.glsl"
+)
+
+include_directories(render)
+include_directories(scene)
+
+add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS} ${shaders_SRC})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
     CXX_STANDARD 14
