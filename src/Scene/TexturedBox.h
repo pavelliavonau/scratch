@@ -8,19 +8,19 @@
 class TexturedBox : public SceneObject
 {
 public:
-    TexturedBox();
-    ~TexturedBox();
+	TexturedBox();
+	~TexturedBox();
 
-    void render(double time) override;
+	void render(double time) override;
 
-    float hOffset = 0.0;
-    float vOffset = 0.0;
+	float hOffset = 0.0;
+	float vOffset = 0.0;
 
 private:
-    GLuint VBO, VAO, EBO;
-    GLuint texture;
-    GLuint texture1;
-    Shader shader;
+	GLuint VBO, VAO, EBO;
+	GLuint texture;
+	GLuint texture1;
+	Shader shader;
 };
 
 #endif // TEXTUREDBOX_H

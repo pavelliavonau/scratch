@@ -4,10 +4,10 @@
 class SceneObject
 {
 public:
-    //SceneObject();
-    virtual ~SceneObject() {}
+	//SceneObject();
+	virtual ~SceneObject() {}
 
-    virtual void render(double time) = 0;
+	virtual void render(double time) = 0;
 };
 
 #endif // SCENEOBJECT_H

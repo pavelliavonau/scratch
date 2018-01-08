@@ -19,9 +19,9 @@ static TexturedBox* textureBox = nullptr;
 int main()
 {
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
-    glfwInit();
+	glfwInit();
 	// Set all the required options for GLFW
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
@@ -39,47 +39,47 @@ int main()
 	glfwSetKeyCallback(window, key_callback);
 
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
-    glewExperimental = GL_TRUE;
-    // Initialize GLEW to setup the OpenGL Function pointers
-    if (glewInit() != GLEW_OK)
-    {
-        std::cout << "Failed to initialize GLEW" << std::endl;
-        return -1;
-    }
+	glewExperimental = GL_TRUE;
+	// Initialize GLEW to setup the OpenGL Function pointers
+	if (glewInit() != GLEW_OK)
+	{
+		std::cout << "Failed to initialize GLEW" << std::endl;
+		return -1;
+	}
 
 	// Define the viewport dimensions
-    int width, height;
+	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
-    try
-    {
-        Scene scene;
-        scene.addObject(new BlinkingTriangle());
-        scene.addObject(::textureBox = new TexturedBox());
+	try
+	{
+		Scene scene;
+		scene.addObject(new BlinkingTriangle());
+		scene.addObject(::textureBox = new TexturedBox());
 
-        while (!glfwWindowShouldClose(window))
-        {
-            // Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
-            glfwPollEvents();
+		while (!glfwWindowShouldClose(window))
+		{
+			// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+			glfwPollEvents();
 
-            // Render
-            // Clear the colorbuffer
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-            glClear(GL_COLOR_BUFFER_BIT);
+			// Render
+			// Clear the colorbuffer
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT);
 
-            scene.render();
+			scene.render();
 
-            // Swap the screen buffers
-            glfwSwapBuffers(window);
-        }
-    } catch (...)
-    {
-        std::cout << "something catched :'(";
-    }
+			// Swap the screen buffers
+			glfwSwapBuffers(window);
+		}
+	} catch (...)
+	{
+		std::cout << "something catched :'(";
+	}
 
 	// Terminate GLFW, clearing any resources allocated by GLFW.
-    glfwTerminate();
+	glfwTerminate();
 	return 0;
 }
 
@@ -98,14 +98,14 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 	}
 
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-        ::textureBox->hOffset -= 0.1f;
+		::textureBox->hOffset -= 0.1f;
 
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-        ::textureBox->hOffset += 0.1f;
+		::textureBox->hOffset += 0.1f;
 
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-        ::textureBox->vOffset -= 0.1f;
+		::textureBox->vOffset -= 0.1f;
 
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
-        ::textureBox->vOffset += 0.1f;
+		::textureBox->vOffset += 0.1f;
 }

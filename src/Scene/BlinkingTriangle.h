@@ -8,14 +8,14 @@
 class BlinkingTriangle : public SceneObject
 {
 public:
-    BlinkingTriangle();
-    ~BlinkingTriangle();
+	BlinkingTriangle();
+	~BlinkingTriangle();
 
-    void render(double time) override;
+	void render(double time) override;
 
 private:
-    GLuint VBO, VAO;
-    Shader shader;
+	GLuint VBO, VAO;
+	Shader shader;
 };
 
 #endif // BLINKINGTRIANGLE_H

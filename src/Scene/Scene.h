@@ -8,14 +8,14 @@ class SceneObject;
 class Scene
 {
 public:
-    ~Scene();
+	~Scene();
 
-    void init();
-    void addObject(SceneObject*);
-    void render();
+	void init();
+	void addObject(SceneObject*);
+	void render();
 
 private:
-    std::vector<SceneObject*> sceneObjects;
+	std::vector<SceneObject*> sceneObjects;
 };
 
 #endif // SCENE_H

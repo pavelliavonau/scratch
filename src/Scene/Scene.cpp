@@ -4,18 +4,18 @@
 
 Scene::~Scene()
 {
-    for(auto o : this->sceneObjects)
-        delete o;
+	for(auto o : this->sceneObjects)
+		delete o;
 }
 
 void Scene::addObject(SceneObject * o)
 {
-    sceneObjects.push_back(o);
+	sceneObjects.push_back(o);
 }
 
 void Scene::render()
 {
-    auto time = glfwGetTime();
-    for(auto o : this->sceneObjects)
-        o->render(time);
+	auto time = glfwGetTime();
+	for(auto o : this->sceneObjects)
+		o->render(time);
 }
