@@ -1,10 +1,10 @@
 set(scratch_SRCS
 	main.cpp
 	render/shader.cpp
-		scene/scene.cpp
-		scene/sceneObject.cpp
-		scene/BlinkingTriangle.cpp
-		scene/TexturedBox.cpp
+	scene/scene.cpp
+	scene/sceneObject.cpp
+	scene/Mesh.cpp
+	scene/TexturedBox.cpp
 )
 
 file(GLOB shaders_SRC

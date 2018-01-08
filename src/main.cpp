@@ -4,7 +4,7 @@
 #include <GLFW/glfw3.h>
 
 #include "Scene.h"
-#include "BlinkingTriangle.h"
+#include "Mesh.h"
 #include "TexturedBox.h"
 
 // Function prototypes
@@ -55,7 +55,14 @@ int main()
 	try
 	{
 		Scene scene;
-		scene.addObject(new BlinkingTriangle());
+		auto mesh = new Mesh({
+				-1.0f , -0.5f, 0.0f, // Left
+				 0.0f , -0.5f, 0.0f, // Right
+				-0.5f ,  0.5f, 0.0f, // Top
+				 0.0f ,  0.5f, 0.0f, // TopLeft
+		   });
+		mesh->blinking = true;
+		scene.addObject(mesh);
 		scene.addObject(::textureBox = new TexturedBox());
 
 		while (!glfwWindowShouldClose(window))

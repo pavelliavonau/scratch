@@ -4,14 +4,17 @@
 #include "SceneObject.h"
 #include <GL/glew.h>
 #include <Shader.h>
+#include <vector>
 
-class BlinkingTriangle : public SceneObject
+class Mesh : public SceneObject
 {
 public:
-	BlinkingTriangle();
-	~BlinkingTriangle();
+	Mesh(const std::vector<GLfloat>& vertices);
+	~Mesh();
 
 	void render(double time) override;
+
+	bool blinking = false;
 
 private:
 	GLuint VBO, VAO;

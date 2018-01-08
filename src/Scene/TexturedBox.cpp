@@ -5,7 +5,7 @@ TexturedBox::TexturedBox()
 	: shader("shaders/vertexColor.glsl" , "shaders/fragmentColor.glsl")
 {
 	// Set up vertex data (and buffer(s)) and attribute pointers
-	GLfloat rect_vertices[] = {
+	GLfloat rect_data_array[] = {
 		// Positions          // Colors           // Texture Coords
 		 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   0.9f, 0.9f, // Top Right
 		 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   0.9f, 0.1f, // Bottom Right
@@ -24,7 +24,7 @@ TexturedBox::TexturedBox()
 	glBindVertexArray(VAO);
 
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(rect_vertices), rect_vertices, GL_STATIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(rect_data_array), rect_data_array, GL_STATIC_DRAW);
 
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(rect_indices), rect_indices, GL_STATIC_DRAW);
@@ -62,7 +62,7 @@ TexturedBox::TexturedBox()
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-	glGenTextures(1, &texture1);
+/*	glGenTextures(1, &texture1);
 
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
@@ -81,6 +81,7 @@ TexturedBox::TexturedBox()
 
 	SOIL_free_image_data(image1);
 	glBindTexture(GL_TEXTURE_2D, 0);
+	*/
 }
 
 TexturedBox::~TexturedBox()
@@ -96,14 +97,17 @@ void TexturedBox::render(double)
 	glUniform1f(hOffsetLocation, hOffset);
 	GLint vOffsetLocation = glGetUniformLocation(shader.Program, "voffset");
 	glUniform1f(vOffsetLocation, vOffset);
+	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
+	glUniform1f(useTextureRate, .9f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture1"), 0);
+	/*
 	glActiveTexture(GL_TEXTURE1);
 	glBindTexture(GL_TEXTURE_2D, texture1);
 	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture2"), 1);
-
+*/
 	// Draw container
 	glBindVertexArray(VAO);
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
