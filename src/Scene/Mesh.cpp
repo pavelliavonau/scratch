@@ -24,7 +24,7 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &VBO);
 }
 
-void Mesh::render(double time)
+void Mesh::render(double time, const glm::mat4&)
 {
 	// Draw our first triangle
 	shader.Use();

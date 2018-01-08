@@ -3,6 +3,8 @@
 
 #include <vector>
 
+#include <glm/glm.hpp>
+
 class SceneObject;
 
 class Scene
@@ -12,7 +14,7 @@ public:
 
 	void init();
 	void addObject(SceneObject*);
-	void render();
+	void render(const glm::mat4& transform);
 
 private:
 	std::vector<SceneObject*> sceneObjects;

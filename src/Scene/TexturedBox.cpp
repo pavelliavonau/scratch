@@ -1,6 +1,9 @@
 #include "TexturedBox.h"
 #include <SOIL.h>
 
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
 TexturedBox::TexturedBox()
 	: shader("shaders/vertexColor.glsl" , "shaders/fragmentColor.glsl")
 {
@@ -62,7 +65,7 @@ TexturedBox::TexturedBox()
 	SOIL_free_image_data(image);
 	glBindTexture(GL_TEXTURE_2D, 0);
 
-/*	glGenTextures(1, &texture1);
+	glGenTextures(1, &texture1);
 
 	glBindTexture(GL_TEXTURE_2D, texture1);
 
@@ -81,7 +84,6 @@ TexturedBox::TexturedBox()
 
 	SOIL_free_image_data(image1);
 	glBindTexture(GL_TEXTURE_2D, 0);
-	*/
 }
 
 TexturedBox::~TexturedBox()
@@ -90,26 +92,34 @@ TexturedBox::~TexturedBox()
 	glDeleteBuffers(1, &VBO);
 }
 
-void TexturedBox::render(double)
+void TexturedBox::render(double time, const glm::mat4& transform)
 {
 	shader.Use();
-	GLint hOffsetLocation = glGetUniformLocation(shader.Program, "hoffset");
-	glUniform1f(hOffsetLocation, hOffset);
-	GLint vOffsetLocation = glGetUniformLocation(shader.Program, "voffset");
-	glUniform1f(vOffsetLocation, vOffset);
+	GLint transformLocation = glGetUniformLocation(shader.Program, "transform");
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+
 	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
 	glUniform1f(useTextureRate, .9f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
 	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture1"), 0);
-	/*
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture2"), 1);
-*/
+
 	// Draw container
 	glBindVertexArray(VAO);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); //draw call 1
+
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture1"), 0);
+
+	glUniform1f(useTextureRate, 0.1f);
+
+	auto trans2 = glm::translate(glm::mat4(1.0f), glm::vec3(-.5, .5, 0.0));
+	auto r = glm::sin(static_cast<GLfloat>(time));
+	trans2 = glm::scale(trans2, glm::vec3(r * 1.0f, r * 1.0f, r * 1.0f));
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans2));
+	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); //draw call 2
+
 	glBindVertexArray(0);
 }

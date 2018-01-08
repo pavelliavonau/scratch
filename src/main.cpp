@@ -7,14 +7,18 @@
 #include "Mesh.h"
 #include "TexturedBox.h"
 
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 // Function prototypes
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 
 // Window dimensions
 static const GLuint WIDTH = 800, HEIGHT = 600;
 
-// REDO ugly next line!
-static TexturedBox* textureBox = nullptr;
+// global transform
+static glm::mat4 transform(1.0f);
 
 int main()
 {
@@ -24,7 +28,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", nullptr, nullptr);
@@ -52,6 +56,9 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
+	//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
+	//transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
+
 	try
 	{
 		Scene scene;
@@ -63,7 +70,7 @@ int main()
 		   });
 		mesh->blinking = true;
 		scene.addObject(mesh);
-		scene.addObject(::textureBox = new TexturedBox());
+		scene.addObject(new TexturedBox());
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -75,7 +82,7 @@ int main()
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			scene.render();
+			scene.render(::transform);
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
@@ -105,14 +112,14 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 	}
 
 	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-		::textureBox->hOffset -= 0.1f;
+		::transform = glm::translate(transform, glm::vec3(-.1f, 0.0f, 0.0f));
 
 	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-		::textureBox->hOffset += 0.1f;
+		::transform = glm::translate(transform, glm::vec3(.1f, 0.0f, 0.0f));
 
 	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-		::textureBox->vOffset -= 0.1f;
+		::transform = glm::translate(transform, glm::vec3(.0f, -.1f, 0.0f));
 
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
-		::textureBox->vOffset += 0.1f;
+		::transform = glm::translate(transform, glm::vec3(.0f, 0.1f, 0.0f));
 }

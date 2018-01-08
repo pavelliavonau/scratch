@@ -11,7 +11,7 @@ public:
 	TexturedBox();
 	~TexturedBox();
 
-	void render(double time) override;
+	void render(double time, const glm::mat4 &) override;
 
 	float hOffset = 0.0;
 	float vOffset = 0.0;
