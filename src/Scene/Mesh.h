@@ -12,7 +12,7 @@ public:
 	Mesh(const std::vector<GLfloat>& vertices);
 	~Mesh();
 
-	void render(double time, const glm::mat4 &transform) override;
+	void render(double time, const glm::mat4 &PVM) override;
 
 	bool blinking = false;
 

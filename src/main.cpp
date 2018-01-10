@@ -12,7 +12,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 // Function prototypes
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 
 // Window dimensions
 static const GLuint WIDTH = 800, HEIGHT = 600;
@@ -41,6 +42,7 @@ int main()
 	glfwMakeContextCurrent(window);
 	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, cursor_position_callback);
 
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
@@ -55,9 +57,6 @@ int main()
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
-
-	//transform = glm::rotate(transform, glm::radians(90.0f), glm::vec3(0.0, 0.0, 1.0));
-	//transform = glm::scale(transform, glm::vec3(0.5, 0.5, 0.5));
 
 	try
 	{
@@ -82,7 +81,17 @@ int main()
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT);
 
-			scene.render(::transform);
+			glm::mat4 model(1.0f);
+			model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+			glm::mat4 view(1.0f);
+			// Обратите внимание, что мы смещаем сцену в направлении обратном тому, в котором мы хотим переместиться
+			view = ::transform * glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+
+			glm::mat4 PVM = projection * view * model;
+			scene.render(PVM);
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
@@ -98,7 +107,7 @@ int main()
 }
 
 // Is called whenever a key is pressed/released via GLFW
-void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mode*/)
+static void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mode*/)
 {
 	std::cout << key << std::endl;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
@@ -122,4 +131,17 @@ void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int
 
 	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
 		::transform = glm::translate(transform, glm::vec3(.0f, 0.1f, 0.0f));
+}
+
+static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+{
+	static double x = 0;
+	static double y = 0;
+
+	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
+	if (state == GLFW_PRESS)
+		::transform = glm::translate(transform, glm::vec3((x - xpos) * .1, (y - ypos) * .1, 0.0f));
+
+	x = xpos;
+	y = ypos;
 }

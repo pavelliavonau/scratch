@@ -92,11 +92,11 @@ TexturedBox::~TexturedBox()
 	glDeleteBuffers(1, &VBO);
 }
 
-void TexturedBox::render(double time, const glm::mat4& transform)
+void TexturedBox::render(double time, const glm::mat4& PVM)
 {
 	shader.Use();
 	GLint transformLocation = glGetUniformLocation(shader.Program, "transform");
-	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(transform));
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PVM));
 
 	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
 	glUniform1f(useTextureRate, .9f);
@@ -115,7 +115,7 @@ void TexturedBox::render(double time, const glm::mat4& transform)
 
 	glUniform1f(useTextureRate, 0.1f);
 
-	auto trans2 = glm::translate(glm::mat4(1.0f), glm::vec3(-.5, .5, 0.0));
+	auto trans2 = glm::translate(PVM, glm::vec3(-.5, .5, 0.0));
 	auto r = glm::sin(static_cast<GLfloat>(time));
 	trans2 = glm::scale(trans2, glm::vec3(r * 1.0f, r * 1.0f, r * 1.0f));
 	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans2));

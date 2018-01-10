@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include <cmath>
 
+#include <glm/gtc/type_ptr.hpp>
+
 Mesh::Mesh(const std::vector<GLfloat>& vertices)
 	:shader("shaders/vertexSimple.glsl", "shaders/fragmentSimple.glsl")
 {
@@ -24,10 +26,12 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &VBO);
 }
 
-void Mesh::render(double time, const glm::mat4&)
+void Mesh::render(double time, const glm::mat4& PVM)
 {
 	// Draw our first triangle
 	shader.Use();
+	GLint transformLocation = glGetUniformLocation(shader.Program, "PVM");
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PVM));
 	// Обновляем цвет формы
 	GLdouble greenValue = ((this->blinking ? sin(time) : 1) / 2) + 0.5;
 	GLint vertexColorLocation = glGetUniformLocation(shader.Program, "simpleColor");
