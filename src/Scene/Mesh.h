@@ -1,5 +1,5 @@
-#ifndef BLINKINGTRIANGLE_H
-#define BLINKINGTRIANGLE_H
+#ifndef MESH_H
+#define MESH_H
 
 #include "SceneObject.h"
 #include <GL/glew.h>
@@ -12,13 +12,14 @@ public:
 	Mesh(const std::vector<GLfloat>& vertices);
 	~Mesh();
 
-	void render(double time, const glm::mat4 &PVM) override;
+	void render(double time, const glm::mat4 &PV) override;
 
 	bool blinking = false;
 
 private:
 	GLuint VBO, VAO;
 	Shader shader;
+	int triCount = 0;
 };
 
-#endif // BLINKINGTRIANGLE_H
+#endif // MESH_H

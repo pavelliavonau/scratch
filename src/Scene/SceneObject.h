@@ -9,7 +9,7 @@ public:
 	//SceneObject();
 	virtual ~SceneObject() {}
 
-	virtual void render(double time, const glm::mat4& transform) = 0;
+	virtual void render(double time, const glm::mat4& PV) = 0;
 };
 
 #endif // SCENEOBJECT_H

@@ -4,6 +4,7 @@ set(scratch_SRCS
 	scene/scene.cpp
 	scene/sceneObject.cpp
 	scene/Mesh.cpp
+	scene/TexturedMesh.cpp
 	scene/TexturedBox.cpp
 )
 

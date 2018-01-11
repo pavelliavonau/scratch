@@ -12,5 +12,5 @@ uniform float useTextureRate;
 
 void main()
 {
-	color = mix(texture(ourTexture1, vec2(TexCoord.x * 2, 1.0 - TexCoord.y * 2)), vec4(ourColor, 1.0f), useTextureRate);
+	color = mix(texture(ourTexture1, vec2(TexCoord.x, 1.0 - TexCoord.y)), vec4(ourColor, 1.0f), useTextureRate);
 }

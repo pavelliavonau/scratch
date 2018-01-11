@@ -14,7 +14,7 @@ public:
 
 	void init();
 	void addObject(SceneObject*);
-	void render(const glm::mat4& transform);
+	void render(const glm::mat4& PV);
 
 private:
 	std::vector<SceneObject*> sceneObjects;

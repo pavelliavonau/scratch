@@ -4,7 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-TexturedBox::TexturedBox()
+TexturedBox::TexturedBox(const std::vector<GLfloat> &)
 	: shader("shaders/vertexColor.glsl" , "shaders/fragmentColor.glsl")
 {
 	// Set up vertex data (and buffer(s)) and attribute pointers
@@ -43,7 +43,6 @@ TexturedBox::TexturedBox()
 	glEnableVertexAttribArray(2);
 
 	glBindVertexArray(0); // Unbind VAO
-
 
 	glGenTextures(1, &texture);
 
@@ -92,11 +91,11 @@ TexturedBox::~TexturedBox()
 	glDeleteBuffers(1, &VBO);
 }
 
-void TexturedBox::render(double time, const glm::mat4& PVM)
+void TexturedBox::render(double time, const glm::mat4& PV)
 {
 	shader.Use();
 	GLint transformLocation = glGetUniformLocation(shader.Program, "transform");
-	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PVM));
+	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PV));
 
 	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
 	glUniform1f(useTextureRate, .9f);
@@ -115,11 +114,10 @@ void TexturedBox::render(double time, const glm::mat4& PVM)
 
 	glUniform1f(useTextureRate, 0.1f);
 
-	auto trans2 = glm::translate(PVM, glm::vec3(-.5, .5, 0.0));
+	auto trans2 = glm::translate(PV, glm::vec3(-.5, .5, 0.0));
 	auto r = glm::sin(static_cast<GLfloat>(time));
 	trans2 = glm::scale(trans2, glm::vec3(r * 1.0f, r * 1.0f, r * 1.0f));
 	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(trans2));
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0); //draw call 2
-
 	glBindVertexArray(0);
 }

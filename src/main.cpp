@@ -5,7 +5,7 @@
 
 #include "Scene.h"
 #include "Mesh.h"
-#include "TexturedBox.h"
+#include "TexturedMesh.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -16,7 +16,7 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 
 // Window dimensions
-static const GLuint WIDTH = 800, HEIGHT = 600;
+static const GLuint WIDTH = 1024, HEIGHT = 768;
 
 // global transform
 static glm::mat4 transform(1.0f);
@@ -58,18 +58,76 @@ int main()
 	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 
+	// Setup OpenGL options
+	glEnable(GL_DEPTH_TEST);
+
 	try
 	{
 		Scene scene;
-		auto mesh = new Mesh({
-				-1.0f , -0.5f, 0.0f, // Left
-				 0.0f , -0.5f, 0.0f, // Right
-				-0.5f ,  0.5f, 0.0f, // Top
-				 0.0f ,  0.5f, 0.0f, // TopLeft
-		   });
-		mesh->blinking = true;
-		scene.addObject(mesh);
-		scene.addObject(new TexturedBox());
+		std::vector<GLfloat> cubeData = {
+			//vertex            color                  UV
+			-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+			 0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			-0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+			-0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+			-0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+			-0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			-0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+			 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			 0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+			-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+			 0.5f, -0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+			 0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			 0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f, -0.5f,  0.5f, -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f, -0.5f, -0.5f, -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+			-0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+			 0.5f,  0.5f, -0.5f,  0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+			 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			 0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+			-0.5f,  0.5f,  0.5f, -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+			-0.5f,  0.5f, -0.5f, -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+		};
+
+		std::vector<glm::vec3> cubePositions = {
+			{ 0.0f,  0.0f,  0.0f},
+			{ 2.0f,  5.0f, -15.0f},
+			{-1.5f, -2.2f, -2.5f},
+			{-3.8f, -2.0f, -12.3f},
+			{ 2.4f, -0.4f, -3.5f},
+			{-1.7f,  3.0f, -7.5f},
+			{ 1.3f, -2.0f, -2.5f},
+			{ 1.5f,  2.0f, -2.5f},
+			{ 1.5f,  0.2f, -1.5f},
+			{-1.3f,  1.0f, -1.5f}
+		};
+
+		for(auto pos : cubePositions)
+		{
+			auto mesh = new TexturedMesh(cubeData);
+			mesh->pos = pos;
+			scene.addObject(mesh);
+		}
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -79,19 +137,14 @@ int main()
 			// Render
 			// Clear the colorbuffer
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
-
-			glm::mat4 model(1.0f);
-			model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 			glm::mat4 view(1.0f);
 			// Обратите внимание, что мы смещаем сцену в направлении обратном тому, в котором мы хотим переместиться
 			view = ::transform * glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-
 			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
-
-			glm::mat4 PVM = projection * view * model;
-			scene.render(PVM);
+			glm::mat4 PV = projection * view;
+			scene.render(PV);
 
 			// Swap the screen buffers
 			glfwSwapBuffers(window);
@@ -140,7 +193,7 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS)
-		::transform = glm::translate(transform, glm::vec3((x - xpos) * .1, (y - ypos) * .1, 0.0f));
+		::transform = glm::translate(transform, glm::vec3((x - xpos) * .1, (ypos - y) * .1, 0.0f));
 
 	x = xpos;
 	y = ypos;
