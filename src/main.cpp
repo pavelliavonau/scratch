@@ -18,8 +18,43 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 // Window dimensions
 static const GLuint WIDTH = 1024, HEIGHT = 768;
 
-// global transform
-static glm::mat4 transform(1.0f);
+// Camera
+static glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
+static glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+static glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
+static GLfloat yaw   = -90.0f;
+static GLfloat pitch = 0.0f;
+static GLfloat fov = 45.0f;
+
+static bool keys[1024];
+
+static void do_movement(bool keys[])
+{
+	// Camera controls
+	GLfloat cameraSpeed = 0.05f;
+
+	if(keys[GLFW_KEY_LEFT_SHIFT])
+		cameraSpeed *= 5;
+
+	if(keys[GLFW_KEY_W])
+		cameraPos += cameraSpeed * cameraFront;
+	if(keys[GLFW_KEY_S])
+		cameraPos -= cameraSpeed * cameraFront;
+	if(keys[GLFW_KEY_A])
+		cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+	if(keys[GLFW_KEY_D])
+		cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraSpeed;
+}
+
+void scroll_callback(GLFWwindow* , double , double yoffset)
+{
+	if(fov >= 1.0f && fov <= 45.0f)
+		fov -= yoffset;
+	if(fov <= 1.0f)
+		fov = 1.0f;
+	if(fov >= 45.0f)
+		fov = 45.0f;
+}
 
 int main()
 {
@@ -43,6 +78,7 @@ int main()
 	// Set the required callback functions
 	glfwSetKeyCallback(window, key_callback);
 	glfwSetCursorPosCallback(window, cursor_position_callback);
+	glfwSetScrollCallback(window, scroll_callback);
 
 	// Set this to true so GLEW knows to use a modern approach to retrieving function pointers and extensions
 	glewExperimental = GL_TRUE;
@@ -133,16 +169,16 @@ int main()
 		{
 			// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 			glfwPollEvents();
-
+			do_movement(keys);
 			// Render
 			// Clear the colorbuffer
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glm::mat4 view(1.0f);
-			// Обратите внимание, что мы смещаем сцену в направлении обратном тому, в котором мы хотим переместиться
-			view = ::transform * glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-			glm::mat4 projection = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
+			glm::mat4 view = glm::lookAt(cameraPos,
+			                             cameraPos + cameraFront,
+			                             cameraUp);
+			glm::mat4 projection = glm::perspective(glm::radians(fov), static_cast<float>(width) / height, 0.1f, 100.0f);
 			glm::mat4 PV = projection * view;
 			scene.render(PV);
 
@@ -173,17 +209,10 @@ static void key_callback(GLFWwindow* window, int key, int /*scancode*/, int acti
 		glPolygonMode(GL_FRONT_AND_BACK, wireframe ? GL_LINE : GL_FILL);
 	}
 
-	if (key == GLFW_KEY_LEFT && action == GLFW_PRESS)
-		::transform = glm::translate(transform, glm::vec3(-.1f, 0.0f, 0.0f));
-
-	if (key == GLFW_KEY_RIGHT && action == GLFW_PRESS)
-		::transform = glm::translate(transform, glm::vec3(.1f, 0.0f, 0.0f));
-
-	if (key == GLFW_KEY_DOWN && action == GLFW_PRESS)
-		::transform = glm::translate(transform, glm::vec3(.0f, -.1f, 0.0f));
-
-	if (key == GLFW_KEY_UP && action == GLFW_PRESS)
-		::transform = glm::translate(transform, glm::vec3(.0f, 0.1f, 0.0f));
+	if(action == GLFW_PRESS)
+		keys[key] = true;
+	else if(action == GLFW_RELEASE)
+		keys[key] = false;
 }
 
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
@@ -193,7 +222,28 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 
 	int state = glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT);
 	if (state == GLFW_PRESS)
-		::transform = glm::translate(transform, glm::vec3((x - xpos) * .1, (ypos - y) * .1, 0.0f));
+	{
+		double xoffset = xpos - x;
+		double yoffset = y - ypos;
+
+		double sensitivity = 0.1;
+		xoffset *= sensitivity;
+		yoffset *= sensitivity;
+
+		yaw   += xoffset;
+		pitch += yoffset;
+
+		if(pitch > 89.0f)
+			pitch = 89.0f;
+		if(pitch < -89.0f)
+			pitch = -89.0f;
+
+		glm::dvec3 front;
+		front.x = cos(glm::radians(static_cast<double>(yaw))) * cos(glm::radians(static_cast<double>(pitch)));
+		front.y = sin(glm::radians(static_cast<double>(pitch)));
+		front.z = sin(glm::radians(static_cast<double>(yaw))) * cos(glm::radians(static_cast<double>(pitch)));
+		cameraFront = glm::normalize(front);
+	}
 
 	x = xpos;
 	y = ypos;
