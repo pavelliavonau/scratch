@@ -15,6 +15,61 @@
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mode);
 static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
 
+#define DEBUG_MESSAGES
+
+#ifdef DEBUG_MESSAGES
+void DebugMessageCallback(GLenum /*source*/,
+                          GLenum type,
+                          GLuint id,
+                          GLenum severity,
+                          GLsizei /*length*/,
+                          const GLchar* message,
+                          const void* /*userParam*/)
+{
+	std::ostream& stream = GL_DEBUG_TYPE_ERROR == type ? std::cerr : std::cout;
+	stream << "---------------------opengl-debug-callback-start------------" << std::endl;
+	stream << "message: "<< message << std::endl;
+	stream << "type: ";
+	switch (type) {
+	case GL_DEBUG_TYPE_ERROR:
+		stream << "ERROR";
+		break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+		stream << "DEPRECATED_BEHAVIOR";
+		break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+		stream << "UNDEFINED_BEHAVIOR";
+		break;
+	case GL_DEBUG_TYPE_PORTABILITY:
+		stream << "PORTABILITY";
+		break;
+	case GL_DEBUG_TYPE_PERFORMANCE:
+		stream << "PERFORMANCE";
+		break;
+	case GL_DEBUG_TYPE_OTHER:
+		stream << "OTHER";
+		break;
+	}
+	stream << std::endl;
+
+	stream << "id: " << id << std::endl;
+	stream << "severity: ";
+	switch (severity){
+	case GL_DEBUG_SEVERITY_LOW:
+		stream << "LOW";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		stream << "MEDIUM";
+		break;
+	case GL_DEBUG_SEVERITY_HIGH:
+		stream << "HIGH";
+		break;
+	}
+	stream << std::endl;
+	stream << "---------------------opengl-debug-callback-end--------------" << std::endl;
+}
+#endif
+
 // Window dimensions
 static const GLuint WIDTH = 1024, HEIGHT = 768;
 
@@ -65,6 +120,9 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+#ifdef DEBUG_MESSAGES
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", nullptr, nullptr);
@@ -88,6 +146,21 @@ int main()
 		std::cout << "Failed to initialize GLEW" << std::endl;
 		return -1;
 	}
+
+#ifdef DEBUG_MESSAGES
+	if (GLEW_KHR_debug) {
+		std::cout << "KHR_debug supported" << std::endl;
+	}
+
+	GLint v;
+	glGetIntegerv( GL_CONTEXT_FLAGS, &v );
+	if (v & GL_CONTEXT_FLAG_DEBUG_BIT) {
+		std::cout << "OpenGL debug context present" << std::endl;
+	}
+
+	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+	glDebugMessageCallback(static_cast<GLDEBUGPROC>(DebugMessageCallback), 0);
+#endif
 
 	// Define the viewport dimensions
 	int width, height;
@@ -165,6 +238,7 @@ int main()
 			scene.addObject(mesh);
 		}
 
+		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 		while (!glfwWindowShouldClose(window))
 		{
 			// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
