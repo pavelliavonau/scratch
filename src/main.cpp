@@ -24,7 +24,7 @@ void DebugMessageCallback(GLenum /*source*/,
                           GLenum severity,
                           GLsizei /*length*/,
                           const GLchar* message,
-                          const void* /*userParam*/)
+                          const void* userParam)
 {
 	std::ostream& stream = GL_DEBUG_TYPE_ERROR == type ? std::cerr : std::cout;
 	stream << "---------------------opengl-debug-callback-start------------" << std::endl;
@@ -66,8 +66,12 @@ void DebugMessageCallback(GLenum /*source*/,
 		break;
 	}
 	stream << std::endl;
+	const std::string* userString = static_cast<const std::string*>(userParam);
+	stream << *userString << std::endl;
 	stream << "---------------------opengl-debug-callback-end--------------" << std::endl;
 }
+
+std::string debug_user_param;
 #endif
 
 // Window dimensions
@@ -159,7 +163,7 @@ int main()
 	}
 
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(static_cast<GLDEBUGPROC>(DebugMessageCallback), 0);
+	glDebugMessageCallback(static_cast<GLDEBUGPROC>(DebugMessageCallback), &debug_user_param);
 #endif
 
 	// Define the viewport dimensions
@@ -170,7 +174,6 @@ int main()
 	// Setup OpenGL options
 	glEnable(GL_DEPTH_TEST);
 
-	try
 	{
 		Scene scene;
 		std::vector<GLfloat> cubeData = {
@@ -233,37 +236,43 @@ int main()
 
 		for(auto pos : cubePositions)
 		{
-			auto mesh = new TexturedMesh(cubeData);
-			mesh->pos = pos;
-			scene.addObject(mesh);
+			try
+			{
+				auto mesh = new TexturedMesh(cubeData);
+				mesh->pos = pos;
+				scene.addObject(mesh);
+			} catch (const std::exception& e) {
+				std::cout << e.what();
+			}
 		}
 
-		glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-		while (!glfwWindowShouldClose(window))
+		try
 		{
-			// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
-			glfwPollEvents();
-			do_movement(keys);
-			// Render
-			// Clear the colorbuffer
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+			while (!glfwWindowShouldClose(window))
+			{
+				// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
+				glfwPollEvents();
+				do_movement(keys);
+				// Render
+				// Clear the colorbuffer
+				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glm::mat4 view = glm::lookAt(cameraPos,
-			                             cameraPos + cameraFront,
-			                             cameraUp);
-			glm::mat4 projection = glm::perspective(glm::radians(fov), static_cast<float>(width) / height, 0.1f, 100.0f);
-			glm::mat4 PV = projection * view;
-			scene.render(PV);
+				glm::mat4 view = glm::lookAt(cameraPos,
+				                             cameraPos + cameraFront,
+				                             cameraUp);
+				glm::mat4 projection = glm::perspective(glm::radians(fov), static_cast<float>(width) / height, 0.1f, 100.0f);
+				glm::mat4 PV = projection * view;
+				scene.render(PV);
 
-			// Swap the screen buffers
-			glfwSwapBuffers(window);
+				// Swap the screen buffers
+				glfwSwapBuffers(window);
+			}
+		} catch (...)
+		{
+			std::cout << "something catched :'(";
 		}
-	} catch (...)
-	{
-		std::cout << "something catched :'(";
 	}
-
 	// Terminate GLFW, clearing any resources allocated by GLFW.
 	glfwTerminate();
 	return 0;
