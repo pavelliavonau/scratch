@@ -27,10 +27,23 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_link_libraries(${PROJECT_NAME}
+	SOIL
+)
+
+if (UNIX)
+target_link_libraries(${PROJECT_NAME}
+	glfw
+	GLEW
+	GL
+)
+endif (UNIX)
+
+if (WIN32)
+target_link_libraries(${PROJECT_NAME}
 	glfw3
 	glew32
-	SOIL
 	opengl32
 	gdi32
 	glu32
 )
+endif (WIN32)
