@@ -59,8 +59,9 @@ TexturedMesh::~TexturedMesh()
 
 void TexturedMesh::render(double time, const glm::mat4& PV)
 {
+	size_t addr = reinterpret_cast<size_t>(this) & 0xFF;
 	model = glm::translate(glm::mat4(1.f), glm::vec3(pos));
-	model = glm::rotate(model, glm::radians((GLfloat)time * 50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+	model = glm::rotate(model, glm::radians((GLfloat)(time + addr) * 50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
 	auto PVM = PV * model;
 	shader.Use();
