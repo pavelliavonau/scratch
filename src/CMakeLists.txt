@@ -1,11 +1,11 @@
 set(scratch_SRCS
 	main.cpp
-	render/shader.cpp
-	scene/scene.cpp
-	scene/sceneObject.cpp
-	scene/Mesh.cpp
-	scene/TexturedMesh.cpp
-	scene/TexturedBox.cpp
+	render/Shader.cpp
+	Scene/Scene.cpp
+	Scene/SceneObject.cpp
+	Scene/Mesh.cpp
+	Scene/TexturedMesh.cpp
+	Scene/TexturedBox.cpp
 )
 
 file(GLOB shaders_SRC
@@ -13,7 +13,7 @@ file(GLOB shaders_SRC
 )
 
 include_directories(render)
-include_directories(scene)
+include_directories(Scene)
 
 add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS} ${shaders_SRC})
 
@@ -24,10 +24,15 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_link_libraries(${PROJECT_NAME}
-	glfw3
-	glew32
+	glfw
+	GLEW
 	SOIL
-	opengl32
-	gdi32
-	glu32
+	GL
+#	X11
+#	pthread
+#	Xrandr
+#	Xi
+#	opengl32
+#	gdi32
+#	glu32
 )
