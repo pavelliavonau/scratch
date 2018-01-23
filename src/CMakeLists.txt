@@ -24,15 +24,10 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 target_link_libraries(${PROJECT_NAME}
-	glfw
-	GLEW
+	glfw3
+	glew32
 	SOIL
-	GL
-#	X11
-#	pthread
-#	Xrandr
-#	Xi
-#	opengl32
-#	gdi32
-#	glu32
+	opengl32
+	gdi32
+	glu32
 )
