@@ -1,5 +1,6 @@
 set(scratch_SRCS
 	main.cpp
+	UserDebugInfo.cpp
 	render/Shader.cpp
 	Scene/Scene.cpp
 	Scene/SceneObject.cpp
@@ -14,6 +15,7 @@ file(GLOB shaders_SRC
 
 include_directories(render)
 include_directories(Scene)
+include_directories(.)
 
 add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS} ${shaders_SRC})
 

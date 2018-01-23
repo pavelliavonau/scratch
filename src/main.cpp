@@ -18,7 +18,9 @@ static void cursor_position_callback(GLFWwindow* window, double xpos, double ypo
 #define DEBUG_MESSAGES
 
 #ifdef DEBUG_MESSAGES
-void DebugMessageCallback(GLenum /*source*/,
+#include "UserDebugInfo.h"
+
+void DebugMessageCallback(GLenum source,
                           GLenum type,
                           GLuint id,
                           GLenum severity,
@@ -27,9 +29,24 @@ void DebugMessageCallback(GLenum /*source*/,
                           const void* userParam)
 {
 	std::ostream& stream = GL_DEBUG_TYPE_ERROR == type ? std::cerr : std::cout;
-	stream << "---------------------opengl-debug-callback-start------------" << std::endl;
-	stream << "message: "<< message << std::endl;
-	stream << "type: ";
+	stream << std::endl << "---------------------opengl-debug-callback-start------------" << std::endl;
+
+	switch (severity){
+	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		stream << "NOTIFICATION";
+		break;
+	case GL_DEBUG_SEVERITY_LOW:
+		stream << "LOW";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		stream << "MEDIUM";
+		break;
+	case GL_DEBUG_SEVERITY_HIGH:
+		stream << "HIGH";
+		break;
+	}
+	stream << "::";
+
 	switch (type) {
 	case GL_DEBUG_TYPE_ERROR:
 		stream << "ERROR";
@@ -46,32 +63,45 @@ void DebugMessageCallback(GLenum /*source*/,
 	case GL_DEBUG_TYPE_PERFORMANCE:
 		stream << "PERFORMANCE";
 		break;
+	case GL_DEBUG_TYPE_MARKER:
+		stream << "MARKER";
+		break;
 	case GL_DEBUG_TYPE_OTHER:
+		stream << "OTHER";
+		break;
+	}
+	stream << "::";
+
+	switch (source){
+	case GL_DEBUG_SOURCE_API:
+		stream << "API";
+		break;
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+		stream << "WINDOW_SYSTEM";
+		break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER:
+		stream << "SHADER_COMPILER";
+		break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY:
+		stream << "THIRD_PARTY";
+		break;
+	case GL_DEBUG_SOURCE_APPLICATION:
+		stream << "APPLICATION";
+		break;
+	case GL_DEBUG_SOURCE_OTHER:
 		stream << "OTHER";
 		break;
 	}
 	stream << std::endl;
 
 	stream << "id: " << id << std::endl;
-	stream << "severity: ";
-	switch (severity){
-	case GL_DEBUG_SEVERITY_LOW:
-		stream << "LOW";
-		break;
-	case GL_DEBUG_SEVERITY_MEDIUM:
-		stream << "MEDIUM";
-		break;
-	case GL_DEBUG_SEVERITY_HIGH:
-		stream << "HIGH";
-		break;
-	}
-	stream << std::endl;
+
+	stream << "message: "<< std::endl <<  message << std::endl;
+
 	const std::string* userString = static_cast<const std::string*>(userParam);
-	stream << *userString << std::endl;
+	stream << "user info: " << std::endl << *userString << std::endl;
 	stream << "---------------------opengl-debug-callback-end--------------" << std::endl;
 }
-
-std::string debug_user_param;
 #endif
 
 // Error callback function prints out any errors from GFLW to the console
@@ -173,7 +203,7 @@ int main()
 	}
 
 	glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-	glDebugMessageCallback(static_cast<GLDEBUGPROC>(DebugMessageCallback), &debug_user_param);
+	glDebugMessageCallback(static_cast<GLDEBUGPROC>(DebugMessageCallback), &UserDebugInfo::userInfoRef());
 #endif
 
 	// Define the viewport dimensions

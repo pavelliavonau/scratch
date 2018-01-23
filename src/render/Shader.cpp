@@ -5,8 +5,7 @@
 #include <sstream>
 #include <iostream>
 #include <stdexcept>
-
-extern std::string debug_user_param;
+#include "UserDebugInfo.h"
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
@@ -19,53 +18,56 @@ Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 	GLuint vertex, fragment;
 	GLint success;
 
-	std::cout << "Compilation " << vertexPath << " ...";
-	debug_user_param = "path: " + std::string(vertexPath);
-	// Вершинный шейдер
-	vertex = glCreateShader(GL_VERTEX_SHADER);
-	glShaderSource(vertex, 1, &vShaderCode, NULL);
-	glCompileShader(vertex);
-	debug_user_param = "";
-	// Если есть ошибки - вывести их
-	glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
-	if(!success)
 	{
-		glDeleteShader(vertex);
-		throw std::runtime_error("vertex shader compilation error in " + std::string(vertexPath) + "\n");
+		UserDebugInfo udi("path: " + std::string(vertexPath));
+		std::cout << "Compilation " << vertexPath << " ...";
+		// Вершинный шейдер
+		vertex = glCreateShader(GL_VERTEX_SHADER);
+		glShaderSource(vertex, 1, &vShaderCode, NULL);
+		glCompileShader(vertex);
+		// Если есть ошибки - вывести их
+		glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
+		if(!success)
+		{
+			glDeleteShader(vertex);
+			throw std::runtime_error("vertex shader compilation error in " + std::string(vertexPath) + "\n");
+		}
+		else
+			std::cout << " DONE" << std::endl;
 	}
-	else
-		std::cout << " DONE" << std::endl;
 
-	std::cout << "Compilation " << fragmentPath << " ...";
-	debug_user_param = "path: " + std::string(fragmentPath);
-	// Вершинный шейдер
-	fragment = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragment, 1, &fShaderCode, NULL);
-	glCompileShader(fragment);
-	debug_user_param = "";
-	// Если есть ошибки - вывести их
-	glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
-	if(!success)
 	{
-		glDeleteShader(fragment);
-		throw std::runtime_error("fragment shader compilation error in " + std::string(fragmentPath) + "\n");
+		UserDebugInfo udi("path: " + std::string(fragmentPath));
+		std::cout << "Compilation " << fragmentPath << " ...";
+		// Вершинный шейдер
+		fragment = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fragment, 1, &fShaderCode, NULL);
+		glCompileShader(fragment);
+		// Если есть ошибки - вывести их
+		glGetShaderiv(fragment, GL_COMPILE_STATUS, &success);
+		if(!success)
+		{
+			glDeleteShader(fragment);
+			throw std::runtime_error("fragment shader compilation error in " + std::string(fragmentPath) + "\n");
+		}
+		else
+			std::cout << " DONE" << std::endl;
 	}
-	else
-		std::cout << " DONE" << std::endl;
 
-	// Шейдерная программа
-	this->Program = glCreateProgram();
-	debug_user_param = "path: " + std::string(vertexPath) + "\n" + std::string(fragmentPath);
-	glAttachShader(this->Program, vertex);
-	glAttachShader(this->Program, fragment);
-	glLinkProgram(this->Program);
-	debug_user_param = "";
-	//Если есть ошибки - вывести их
-	glGetProgramiv(this->Program, GL_LINK_STATUS, &success);
-	if(!success)
 	{
-		glDeleteProgram(this->Program);
-		throw std::runtime_error("linking shader program error");
+		UserDebugInfo udi("path: " + std::string(vertexPath) + "\n" + std::string(fragmentPath));
+		// Шейдерная программа
+		this->Program = glCreateProgram();
+		glAttachShader(this->Program, vertex);
+		glAttachShader(this->Program, fragment);
+		glLinkProgram(this->Program);
+		//Если есть ошибки - вывести их
+		glGetProgramiv(this->Program, GL_LINK_STATUS, &success);
+		if(!success)
+		{
+			glDeleteProgram(this->Program);
+			throw std::runtime_error("linking shader program error");
+		}
 	}
 
 	// Удаляем шейдеры, поскольку они уже в программу и нам больше не нужны.
