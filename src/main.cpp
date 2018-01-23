@@ -74,6 +74,12 @@ void DebugMessageCallback(GLenum /*source*/,
 std::string debug_user_param;
 #endif
 
+// Error callback function prints out any errors from GFLW to the console
+static void error_callback(int error, const char *description)
+{
+	std::cout << error << '\t' << description << std::endl;
+}
+
 // Window dimensions
 static const GLuint WIDTH = 1024, HEIGHT = 768;
 
@@ -117,8 +123,12 @@ void scroll_callback(GLFWwindow* , double , double yoffset)
 
 int main()
 {
+	glfwSetErrorCallback(error_callback);
 	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
-	glfwInit();
+	if(GLFW_FALSE == glfwInit()){
+		std::cout << "Failed to init GLFW" << std::endl;
+		return -1;
+	}
 	// Set all the required options for GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
