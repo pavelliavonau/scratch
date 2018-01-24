@@ -16,7 +16,7 @@ public:
 	TexturedMesh(const std::vector<GLfloat>& data);
 	~TexturedMesh();
 
-	void render(double time, const glm::mat4 &PVM) override;
+	void render(float time, const glm::mat4 &PVM) override;
 
 	bool blinking = false;
 	glm::vec3 pos = {0.f, 0.f, 0.f};

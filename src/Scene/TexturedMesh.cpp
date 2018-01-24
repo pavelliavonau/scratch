@@ -57,7 +57,7 @@ TexturedMesh::~TexturedMesh()
 	glDeleteBuffers(1, &VBO);
 }
 
-void TexturedMesh::render(double time, const glm::mat4& PV)
+void TexturedMesh::render(float time, const glm::mat4& PV)
 {
 	size_t addr = reinterpret_cast<size_t>(this) & 0xFF;
 	model = glm::translate(glm::mat4(1.f), glm::vec3(pos));

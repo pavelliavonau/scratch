@@ -260,9 +260,15 @@ int main()
 		{
 			while (!glfwWindowShouldClose(window))
 			{
+				static float deltaTime = 0.0f;	// Время, прошедшее между последним и текущим кадром
+				static float lastFrame = 0.0f;	// Время вывода последнего кадра
+
+				float currentFrameTime = static_cast<float>(glfwGetTime());
+				deltaTime = currentFrameTime - lastFrame;
+				lastFrame = currentFrameTime;
 				// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
 				glfwPollEvents();
-				Camera::instance().doMovement(keys);
+				Camera::instance().doMovement(keys, deltaTime);
 				// Render
 				// Clear the colorbuffer
 				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -271,7 +277,7 @@ int main()
 				glm::mat4 view = Camera::instance().view();
 				glm::mat4 projection = glm::perspective(glm::radians(Camera::instance().getFov()), static_cast<float>(width) / height, 0.1f, 100.0f);
 				glm::mat4 PV = projection * view;
-				scene.render(PV);
+				scene.render(PV, currentFrameTime);
 
 				// Swap the screen buffers
 				glfwSwapBuffers(window);

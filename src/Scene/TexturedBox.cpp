@@ -91,7 +91,7 @@ TexturedBox::~TexturedBox()
 	glDeleteBuffers(1, &VBO);
 }
 
-void TexturedBox::render(double time, const glm::mat4& PV)
+void TexturedBox::render(float time, const glm::mat4& PV)
 {
 	shader.Use();
 	GLint transformLocation = glGetUniformLocation(shader.Program, "transform");

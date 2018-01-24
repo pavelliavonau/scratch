@@ -20,9 +20,9 @@ void Camera::init(glm::vec3 position, glm::vec3 up, GLfloat yaw, GLfloat pitch)
 	this->updateVectors();
 }
 
-void Camera::doMovement(bool keys[])
+void Camera::doMovement(bool keys[], float deltaTime)
 {
-	GLfloat cameraSpeed = 0.05f;
+	GLfloat cameraSpeed = 5.f * deltaTime;
 
 	if(keys[GLFW_KEY_LEFT_SHIFT])
 		cameraSpeed *= 5;

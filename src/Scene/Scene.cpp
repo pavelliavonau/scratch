@@ -1,6 +1,5 @@
 #include "Scene.h"
 #include "SceneObject.h"
-#include <GLFW/glfw3.h>
 
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -15,9 +14,8 @@ void Scene::addObject(SceneObject * o)
 	sceneObjects.push_back(o);
 }
 
-void Scene::render(const glm::mat4& PV)
+void Scene::render(const glm::mat4& PV, float time)
 {
-	auto time = glfwGetTime();
 	for(auto o : this->sceneObjects)
 		o->render(time, PV);
 }

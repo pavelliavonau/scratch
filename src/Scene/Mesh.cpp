@@ -27,7 +27,7 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &VBO);
 }
 
-void Mesh::render(double time, const glm::mat4& PV)
+void Mesh::render(float time, const glm::mat4& PV)
 {
 	shader.Use();
 	GLint transformLocation = glGetUniformLocation(shader.Program, "PVM");

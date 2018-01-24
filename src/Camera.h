@@ -11,7 +11,7 @@ public:
 
 	void init(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), GLfloat yaw = -90.0f, GLfloat pitch = 0.0f);
 
-	void doMovement(bool keys[]);
+	void doMovement(bool keys[], float deltaTime);
 	void doRotation(double dx, double dy);
 	void doFov(double dy);
 
