@@ -7,7 +7,7 @@ class SceneObject
 {
 public:
 	//SceneObject();
-	virtual ~SceneObject() {}
+	virtual ~SceneObject();
 
 	virtual void render(float time, const glm::mat4& PV) = 0;
 };

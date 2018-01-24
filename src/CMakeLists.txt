@@ -8,6 +8,7 @@ set(scratch_SRCS
 	Scene/Mesh.cpp
 	Scene/TexturedMesh.cpp
 	Scene/TexturedBox.cpp
+	Scene/Light.cpp
 )
 
 file(GLOB shaders_SRC

@@ -1,3 +1,4 @@
+#include <Light.h>
 #include <iostream>
 
 #include <GL/glew.h>
@@ -244,16 +245,19 @@ int main()
 			{-1.3f,  1.0f, -1.5f}
 		};
 
-		for(auto pos : cubePositions)
+		try
 		{
-			try
+			for(auto pos : cubePositions)
 			{
 				auto mesh = new TexturedMesh(cubeData);
 				mesh->pos = pos;
 				scene.addObject(mesh);
-			} catch (const std::exception& e) {
-				std::cout << e.what();
 			}
+
+			scene.addObject(new Light());
+
+		} catch (const std::exception& e) {
+			std::cout << e.what();
 		}
 
 		try
@@ -271,7 +275,7 @@ int main()
 				Camera::instance().doMovement(keys, deltaTime);
 				// Render
 				// Clear the colorbuffer
-				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+				glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 				glm::mat4 view = Camera::instance().view();
