@@ -2,6 +2,7 @@ set(scratch_SRCS
 	main.cpp
 	UserDebugInfo.cpp
 	Camera.cpp
+	ImportObj.cpp
 	render/Shader.cpp
 	Scene/Scene.cpp
 	Scene/SceneObject.cpp
