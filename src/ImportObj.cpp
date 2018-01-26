@@ -1,34 +1,82 @@
 #include "ImportObj.h"
 
 #include <string>
+#include <iostream>
+
+template<class T>
+void collectOutput(std::vector<T>& dest, std::vector<unsigned int>& indexesSource, std::vector<T>& tempSource)
+{
+	for(auto i = 0u; i < indexesSource.size(); i++)
+	{
+		auto itemIndex = indexesSource[i];
+		auto item = tempSource[itemIndex - 1];
+		dest.push_back(item);
+	}
+}
 
 bool OBJLoader::loadVertices(const char *path, std::vector<glm::vec3> &out_vertices)
 {
+	this->parseFace = [] (FILE * file, unsigned int* vertexIndex, unsigned int*, unsigned int*) -> bool
+	{
+		int matches = fscanf(file, "%d %d %d\n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
+		if(matches == 3)
+			return true;
+		else
+		{
+			std::cout << "loadVertices failed" << std::endl;;
+			return false;
+		}
+	};
+
 	if(!parseFile(path))
 		return false;
 
-	collectVertices(out_vertices);
+	collectOutput(out_vertices, vertexIndices, temp_vertices);
 	return true;
 }
 
 bool OBJLoader::loadVerticesUV(const char *path, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs)
 {
+	this->parseFace = [] (FILE * file, unsigned int* vertexIndex, unsigned int* uvIndex, unsigned int*) -> bool
+	{
+		int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
+		if(matches == 6)
+			return true;
+		else
+		{
+			std::cout << "loadVerticesUV failed" << std::endl;;
+			return false;
+		}
+	};
+
 	if(!parseFile(path))
 		return false;
 
-	collectVertices(out_vertices);
-	collectUVs(out_uvs);
+	collectOutput(out_vertices, vertexIndices, temp_vertices);
+	collectOutput(out_uvs, uvIndices, temp_uvs);
 	return true;
 }
 
 bool OBJLoader::loadVerticesUVNormal(const char *path, std::vector<glm::vec3> &out_vertices, std::vector<glm::vec2> &out_uvs, std::vector<glm::vec3> &out_normals)
 {
+	this->parseFace = [] (FILE * file, unsigned int* vertexIndex, unsigned int* uvIndex, unsigned int* normalIndex) -> bool
+	{
+		int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
+		if(matches == 9)
+			return true;
+		else
+		{
+			std::cout << "loadVerticesUVNormal failed" << std::endl;;
+			return false;
+		}
+	};
+
 	if(!parseFile(path))
 		return false;
 
-	collectNormals(out_vertices);
-	collectUVs(out_uvs);
-	collectNormals(out_normals);
+	collectOutput(out_vertices, vertexIndices, temp_vertices);
+	collectOutput(out_uvs, uvIndices, temp_uvs);
+	collectOutput(out_normals, normalIndices, temp_normals);
 	return true;
 }
 
@@ -71,15 +119,10 @@ bool OBJLoader::parseFile(const char *path)
 		}
 		else if ( strcmp( lineHeader, "f" ) == 0 )
 		{
-			std::string vertex1, vertex2, vertex3;
 			unsigned int vertexIndex[3], uvIndex[3], normalIndex[3];
-//			char face[128];
-//			fgets(face, 128, file); // TODO: parse face data
-			//int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
-			int matches = fscanf(file, getFacePattern().c_str(), &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
-			if (matches != 3)
+			if (!parseFace(file, vertexIndex, uvIndex, normalIndex))
 			{
-				printf("File can't be read by our simple parser : ( Try exporting with other options. We read only vertexes.\n");
+				printf("File can't be read by our simple parser : ( Try exporting with other options.\n");
 				fclose(file);
 				return false;
 			}
@@ -97,42 +140,4 @@ bool OBJLoader::parseFile(const char *path)
 
 	fclose(file);
 	return true;
-}
-
-void OBJLoader::collectVertices(std::vector<glm::vec3> &out_vertices)
-{
-	// For each vertex of each triangle
-	for(unsigned int i=0; i<vertexIndices.size(); i++)
-	{
-		unsigned int vertexIndex = vertexIndices[i];
-		glm::vec3 vertex = temp_vertices[ vertexIndex-1 ];
-		out_vertices.push_back(vertex);
-	}
-}
-
-void OBJLoader::collectUVs(std::vector<glm::vec2> &out_uvs)
-{
-	// For each uv of each triangle
-	for(unsigned int i=0; i<uvIndices.size(); i++)
-	{
-		unsigned int uvIndex = uvIndices[i];
-		glm::vec2 uv = temp_uvs[ uvIndex-1 ];
-		out_uvs.push_back(uv);
-	}
-}
-
-void OBJLoader::collectNormals(std::vector<glm::vec3> &out_normals)
-{
-	// For each normal of each triangle
-	for(unsigned int i=0; i<normalIndices.size(); i++)
-	{
-		unsigned int normalIndex = normalIndices[i];
-		glm::vec3 normal = temp_normals[ normalIndex-1 ];
-		out_normals.push_back(normal);
-	}
-}
-
-std::string OBJLoader::getFacePattern()
-{
-	return "%d %d %d\n";// TODO: implement
 }
