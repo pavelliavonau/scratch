@@ -9,11 +9,7 @@
 class TexturedMesh : public SceneObject
 {
 public:
-	/*
-	 * strides
-	 *    stride = vec3 (vertex) + vec3 (color) + vec2 (UV)
-	 * */
-	TexturedMesh(const std::vector<GLfloat>& data);
+	TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::vector<glm::vec2>& uvData);
 	~TexturedMesh();
 
 	void render(float time, const glm::mat4 &PVM) override;
@@ -22,7 +18,7 @@ public:
 	glm::vec3 pos = {0.f, 0.f, 0.f};
 
 private:
-	GLuint VBO, VAO;
+	GLuint VBO_vert, VBO_uv, VAO;
 	GLuint texture;
 	Shader shader;
 	int triCount = 0;

@@ -5,30 +5,43 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-TexturedMesh::TexturedMesh(const std::vector<GLfloat>& data)
+TexturedMesh::TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::vector<glm::vec2>& uvData)
 	:shader("shaders/vertexColor.glsl", "shaders/fragmentColor.glsl")
 {
-	const int STRIDE_SIZE = 8;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-	// Bind the Vertex Array Object first, then bind and set vertex buffer(s) and attribute pointer(s).
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	this->triCount = (int)data.size() / STRIDE_SIZE;
-	glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(GLfloat) * data.size()), data.data(), GL_STATIC_DRAW);
+	this->triCount = static_cast<int>(vertexData.size());
 
-	// Position attribute
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, STRIDE_SIZE * sizeof(GLfloat), static_cast<GLvoid*>(0));
-	glEnableVertexAttribArray(0);
-	// Color attribute
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, STRIDE_SIZE * sizeof(GLfloat), reinterpret_cast<GLvoid*>(3 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(1);
-	// TexCoord attribute
-	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, STRIDE_SIZE * sizeof(GLfloat), reinterpret_cast<GLvoid*>(6 * sizeof(GLfloat)));
-	glEnableVertexAttribArray(2);
+	{
+		glGenVertexArrays(1, &VAO);
 
-	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
-	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
+		glGenBuffers(1, &VBO_vert);
+		glGenBuffers(1, &VBO_uv);
+
+		glBindVertexArray(VAO);
+
+		{// vertex stream
+			glBindBuffer(GL_ARRAY_BUFFER, VBO_vert);
+			glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(glm::vec3) * vertexData.size()), vertexData.data(), GL_STATIC_DRAW);
+
+			// Position attribute
+			glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(0));
+			glEnableVertexAttribArray(0);
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
+		{// uv stream
+			glBindBuffer(GL_ARRAY_BUFFER, VBO_uv);
+
+			glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(glm::vec3) * uvData.size()), uvData.data(), GL_STATIC_DRAW);
+
+			// TexCoord attribute
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), static_cast<GLvoid*>(0));
+			glEnableVertexAttribArray(1);
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
+
+		glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
+	}
 
 	glGenTextures(1, &texture);
 
@@ -54,7 +67,8 @@ TexturedMesh::TexturedMesh(const std::vector<GLfloat>& data)
 TexturedMesh::~TexturedMesh()
 {
 	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &VBO_vert);
+	glDeleteBuffers(1, &VBO_uv);
 }
 
 void TexturedMesh::render(float time, const glm::mat4& PV)
