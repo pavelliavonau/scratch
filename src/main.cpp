@@ -190,9 +190,10 @@ int main()
 		Scene scene;
 		std::vector<glm::vec3> vertices;
 		std::vector<glm::vec2> uvs;
+		std::vector<glm::vec3> normals;
 		{
 			OBJLoader lo;
-			lo.loadVerticesUV("models/cube.obj", vertices, uvs);
+			lo.loadVerticesUVNormal("models/cube.obj", vertices, uvs, normals);
 		}
 		std::vector<glm::vec3> cubePositions = {
 			{ 0.0f,  0.0f,  0.0f},
@@ -211,7 +212,7 @@ int main()
 		{
 			for(auto pos : cubePositions)
 			{
-				auto mesh = new TexturedMesh(vertices, uvs);
+				auto mesh = new TexturedMesh(vertices, uvs, normals);
 				mesh->pos = pos * 2.0f;
 				scene.addObject(mesh);
 			}

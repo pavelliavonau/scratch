@@ -5,7 +5,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-TexturedMesh::TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::vector<glm::vec2>& uvData)
+TexturedMesh::TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::vector<glm::vec2>& uvData, const std::vector<glm::vec3>& normalsData)
 	:shader("shaders/vertexColor.glsl", "shaders/fragmentColor.glsl")
 {
 	this->triCount = static_cast<int>(vertexData.size());
@@ -15,6 +15,7 @@ TexturedMesh::TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::
 
 		glGenBuffers(1, &VBO_vert);
 		glGenBuffers(1, &VBO_uv);
+		glGenBuffers(1, &VBO_norm);
 
 		glBindVertexArray(VAO);
 
@@ -31,11 +32,23 @@ TexturedMesh::TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::
 		{// uv stream
 			glBindBuffer(GL_ARRAY_BUFFER, VBO_uv);
 
-			glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(glm::vec3) * uvData.size()), uvData.data(), GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(glm::vec2) * uvData.size()), uvData.data(), GL_STATIC_DRAW);
 
 			// TexCoord attribute
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), static_cast<GLvoid*>(0));
 			glEnableVertexAttribArray(1);
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+		}
+
+		{// normals stream
+			glBindBuffer(GL_ARRAY_BUFFER, VBO_norm);
+
+			glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizeiptr>(sizeof(glm::vec3) * normalsData.size()), normalsData.data(), GL_STATIC_DRAW);
+
+			// TexCoord attribute
+			glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(0));
+			glEnableVertexAttribArray(2);
 
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 		}
@@ -69,6 +82,7 @@ TexturedMesh::~TexturedMesh()
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO_vert);
 	glDeleteBuffers(1, &VBO_uv);
+	glDeleteBuffers(1, &VBO_norm);
 }
 
 void TexturedMesh::render(float time, const glm::mat4& PV)
@@ -77,10 +91,11 @@ void TexturedMesh::render(float time, const glm::mat4& PV)
 	model = glm::translate(glm::mat4(1.f), glm::vec3(pos));
 	model = glm::rotate(model, glm::radians((GLfloat)(time + addr) * 50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
-	auto PVM = PV * model;
 	shader.Use();
-	GLint transformLocation = glGetUniformLocation(shader.Program, "transform");
-	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PVM));
+	GLint projectionViewLocation = glGetUniformLocation(shader.Program, "projectionView");
+	glUniformMatrix4fv(projectionViewLocation, 1, GL_FALSE, glm::value_ptr(PV));
+	GLint modelLocation = glGetUniformLocation(shader.Program, "model");
+	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
 	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
 	glUniform1f(useTextureRate, 0.0f);
