@@ -123,14 +123,21 @@ void scroll_callback(GLFWwindow* , double , double dy)
 	Camera::instance().doFov(dy);
 }
 
-int main()
+static bool initGLFW()
 {
-	glfwSetErrorCallback(error_callback);
-	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
-	if(GLFW_FALSE == glfwInit()){
+	if(GLFW_FALSE == glfwInit())
+	{
 		std::cout << "Failed to init GLFW" << std::endl;
-		return -1;
+		return false;
 	}
+	return true;
+}
+
+static GLFWwindow* createGL33Window(GLuint width, GLuint heigth)
+{
+	if(!initGLFW())
+		return nullptr;
+	std::cout << "Starting GLFW context, OpenGL 3.3" << std::endl;
 	// Set all the required options for GLFW
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
@@ -141,7 +148,46 @@ int main()
 #endif
 
 	// Create a GLFWwindow object that we can use for GLFW's functions
-	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "OpenGL", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(width, heigth, "OpenGL", nullptr, nullptr);
+	if(!window)
+	{
+		std::cout << "Failed starting GLFW context, OpenGL 3.3" << std::endl;
+		glfwTerminate();
+	}
+	return window;
+}
+
+static GLFWwindow* createGLES20Window(GLuint width, GLuint heigth)
+{
+	if(!initGLFW())
+		return nullptr;
+	std::cout << "Starting GLFW context, OpenGL ES 2.0" << std::endl;
+	// Set all the required options for GLFW
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 2) ;
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0) ;
+	glfwWindowHint(GLFW_CLIENT_API, GLFW_OPENGL_ES_API) ;
+	glfwWindowHint(GLFW_RESIZABLE, GL_TRUE);
+#ifdef DEBUG_MESSAGES
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+#endif
+
+	// Create a GLFWwindow object that we can use for GLFW's functions
+	GLFWwindow* window = glfwCreateWindow(width, heigth, "OpenGL ES", nullptr, nullptr);
+	if(!window)
+	{
+		std::cout << "Failed starting GLFW context, OpenGL ES 2.0" << std::endl;
+		glfwTerminate();
+	}
+	return window;
+}
+
+int main()
+{
+	glfwSetErrorCallback(error_callback);
+
+	GLFWwindow* window = createGL33Window(WIDTH, HEIGHT);
+	if (window == nullptr)
+		window = createGLES20Window(WIDTH, HEIGHT);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -163,6 +209,7 @@ int main()
 		return -1;
 	}
 
+	std::cout << glGetString(GL_VERSION) << std::endl;
 #ifdef DEBUG_MESSAGES
 	if (GLEW_KHR_debug) {
 		std::cout << "KHR_debug supported" << std::endl;
