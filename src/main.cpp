@@ -9,6 +9,7 @@
 #include "Mesh.h"
 #include "TexturedMesh.h"
 #include "ImportObj.h"
+#include "ShaderManager.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -266,6 +267,8 @@ int main()
 
 			scene.addObject(new Light());
 
+			ShaderManager::instance().clean_shaders();
+
 		} catch (const std::exception& e) {
 			std::cout << e.what();
 		}
@@ -309,7 +312,7 @@ int main()
 // Is called whenever a key is pressed/released via GLFW
 static void key_callback(GLFWwindow* window, int key, int /*scancode*/, int action, int /*mode*/)
 {
-	std::cout << key << std::endl;
+//	std::cout << key << std::endl;
 	if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
 		glfwSetWindowShouldClose(window, GL_TRUE);
 

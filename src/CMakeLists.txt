@@ -4,6 +4,7 @@ set(scratch_SRCS
 	Camera.cpp
 	ImportObj.cpp
 	render/Shader.cpp
+	render/ShaderManager.cpp
 	Scene/Scene.cpp
 	Scene/SceneObject.cpp
 	Scene/Mesh.cpp

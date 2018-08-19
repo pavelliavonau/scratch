@@ -13,9 +13,6 @@ public:
 	Shader(const GLchar* vertexPath, const GLchar* fragmentPath);
 	~Shader();
 	void Use();
-
-private:
-	std::string readShaderSource(const GLchar* path) const;
 };
 
 #endif // SHADER_H
