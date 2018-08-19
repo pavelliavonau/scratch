@@ -4,7 +4,7 @@
 #include <glm/gtc/type_ptr.hpp>
 
 Mesh::Mesh(const std::vector<GLfloat>& vertices)
-	:shader("shaders/vertexSimple.glsl", "shaders/fragmentSimple.glsl")
+	:shader("vertexSimple.glsl", "fragmentSimple.glsl")
 {
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);

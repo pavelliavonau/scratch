@@ -30,16 +30,22 @@ void ShaderManager::clean_shaders()
 	this->shaders.clear();
 }
 
+void ShaderManager::set_shaders_root(const std::string &path_prefix)
+{
+	this->shaders_root = path_prefix;
+}
+
 GLuint &ShaderManager::get_shader(const std::string &shader_source_path, int shader_type)
 {
 	auto key = shader_source_path;
 	auto it = this->shaders.find(key);
 	if (it == this->shaders.end())
 	{
-		std::string shaderCode = readShaderSource(shader_source_path);
+		auto full_shader_source_path = this->shaders_root + shader_source_path;
+		std::string shaderCode = readShaderSource(full_shader_source_path);
 		const GLchar* fShaderCode = shaderCode.c_str();
-		UserDebugInfo udi("path: " + std::string(shader_source_path));
-		std::cout << "Compilation " << shader_source_path << " ...";
+		UserDebugInfo udi("path: " + full_shader_source_path);
+		std::cout << "Compilation " << full_shader_source_path << " ...";
 		GLuint shader = glCreateShader(shader_type);
 		glShaderSource(shader, 1, &fShaderCode, NULL);
 		glCompileShader(shader);

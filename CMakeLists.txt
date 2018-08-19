@@ -31,4 +31,6 @@ add_definitions(
 )
 
 add_subdirectory(src)
+add_subdirectory(data/shaders/gl)
+add_subdirectory(data/shaders/gles)
 add_subdirectory(include/glm)

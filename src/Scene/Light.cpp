@@ -7,7 +7,7 @@
 
 #include "ImportObj.h"
 
-Light::Light() : shader("shaders/vertexSimple.glsl", "shaders/fragmentSimple.glsl")
+Light::Light() : shader("vertexSimple.glsl", "fragmentSimple.glsl")
 {
 	std::vector<glm::vec3> vertices;
 	{

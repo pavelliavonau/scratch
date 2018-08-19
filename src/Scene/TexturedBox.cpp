@@ -5,7 +5,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 TexturedBox::TexturedBox(const std::vector<GLfloat> &)
-	: shader("shaders/vertexColor.glsl" , "shaders/fragmentColor.glsl")
+	: shader("vertexColor.glsl" , "fragmentColor.glsl")
 {
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat rect_data_array[] = {

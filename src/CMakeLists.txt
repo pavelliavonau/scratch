@@ -13,15 +13,11 @@ set(scratch_SRCS
 	Scene/Light.cpp
 )
 
-file(GLOB shaders_SRC
-	"../data/shaders/*.glsl"
-)
-
 include_directories(render)
 include_directories(Scene)
 include_directories(.)
 
-add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS} ${shaders_SRC})
+add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD 14

@@ -155,6 +155,7 @@ static GLFWwindow* createGL33Window(GLuint width, GLuint heigth)
 		std::cout << "Failed starting GLFW context, OpenGL 3.3" << std::endl;
 		glfwTerminate();
 	}
+	ShaderManager::instance().set_shaders_root("shaders/gl/");
 	return window;
 }
 
@@ -179,6 +180,7 @@ static GLFWwindow* createGLES20Window(GLuint width, GLuint heigth)
 		std::cout << "Failed starting GLFW context, OpenGL ES 2.0" << std::endl;
 		glfwTerminate();
 	}
+	ShaderManager::instance().set_shaders_root("shaders/gles/");
 	return window;
 }
 

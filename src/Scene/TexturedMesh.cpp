@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 TexturedMesh::TexturedMesh(const std::vector<glm::vec3>& vertexData, const std::vector<glm::vec2>& uvData, const std::vector<glm::vec3>& normalsData)
-	:shader("shaders/vertexColor.glsl", "shaders/fragmentColor.glsl")
+	:shader("vertexColor.glsl", "fragmentColor.glsl")
 {
 	this->triCount = static_cast<int>(vertexData.size());
 
