@@ -184,13 +184,46 @@ static GLFWwindow* createGLES20Window(GLuint width, GLuint heigth)
 	return window;
 }
 
-int main()
+using options_t = std::map<std::string, std::vector<std::string>>;
+
+static options_t parse_command_line(int argc, char** argv)
 {
+	options_t options;
+	std::string current_option;
+	for(auto i = 1; i < argc; ++i)
+	{
+		if (argv[i][0] == '-')
+		{
+			current_option = argv[i];
+			continue;
+		}
+		if (!current_option.empty())
+			options[current_option].push_back(argv[i]);
+	}
+	return options;
+}
+
+static bool has_option(const char* option, options_t options)
+{
+	return options.find(option) != options.end();
+}
+
+int main(int argc, char** argv)
+{
+	auto options = parse_command_line(argc, argv);
+
 	glfwSetErrorCallback(error_callback);
 
-	GLFWwindow* window = createGL33Window(WIDTH, HEIGHT);
+	GLFWwindow* window = nullptr;
+
+	if (has_option("-backend", options))
+	{
+		auto value = options["-backend"].front();
+		if (value == "opengles20")
+			window = createGLES20Window(WIDTH, HEIGHT);
+	}
 	if (window == nullptr)
-		window = createGLES20Window(WIDTH, HEIGHT);
+		window = createGL33Window(WIDTH, HEIGHT);
 	if (window == nullptr)
 	{
 		std::cout << "Failed to create GLFW window" << std::endl;
