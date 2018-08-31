@@ -1,12 +1,17 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.0.0)
+
+project(scratch)
+
+################################################################################
+# Use solution folders feature
+################################################################################
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 include_directories(include)
 
 if (WIN32)
 	link_directories(${CMAKE_SOURCE_DIR}/lib/mingw72/${CMAKE_BUILD_TYPE})
 endif (WIN32)
-
-project(scratch)
 
 if (UNIX)
 	find_package(GLEW REQUIRED)
@@ -26,9 +31,7 @@ if (UNIX)
 	link_libraries(${GLFW_STATIC_LIBRARIES})
 endif (UNIX)
 
-add_definitions(
-	-DGLEW_STATIC
-)
+add_subdirectory(3rdparty/soil)
 
 add_subdirectory(src)
 add_subdirectory(data/shaders/gl)

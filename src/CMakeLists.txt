@@ -1,3 +1,5 @@
+project(scratch)
+
 set(scratch_SRCS
 	main.cpp
 	UserDebugInfo.cpp
@@ -13,17 +15,24 @@ set(scratch_SRCS
 	Scene/Light.cpp
 )
 
-include_directories(render)
-include_directories(Scene)
-include_directories(.)
-
 add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS})
+
+target_include_directories(${PROJECT_NAME} PUBLIC render;Scene;.)
+target_include_directories(${PROJECT_NAME} INTERFACE
+	$<INSTALL_INTERFACE:${SOIL_INCLUDE_DIRS}>
+)
+
+add_definitions(
+	-DGLEW_STATIC
+)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD 14
 	CXX_STANDARD_REQUIRED YES
 	CXX_EXTENSIONS NO
 )
+
+add_dependencies(${PROJECT_NAME} SOIL)
 
 target_link_libraries(${PROJECT_NAME}
 	SOIL
