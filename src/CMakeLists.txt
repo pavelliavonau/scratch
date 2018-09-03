@@ -36,22 +36,12 @@ add_dependencies(${PROJECT_NAME} SOIL)
 
 target_link_libraries(${PROJECT_NAME}
 	SOIL
+	GLEW::GLEW
+	OpenGL::GL
 )
 
 if (UNIX)
-target_link_libraries(${PROJECT_NAME}
-	glfw
-	GLEW
-	GL
-)
-endif (UNIX)
-
-if (WIN32)
-target_link_libraries(${PROJECT_NAME}
-	glfw3
-	glew32
-	opengl32
-	gdi32
-	glu32
-)
-endif (WIN32)
+	target_link_libraries(${PROJECT_NAME} glfw)
+elseif (WIN32)
+	target_link_libraries(${PROJECT_NAME} glfw3)
+endif ()
