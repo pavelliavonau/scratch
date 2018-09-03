@@ -7,7 +7,7 @@ project(scratch)
 ################################################################################
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
-include_directories(include)
+include_directories(include;3rdparty)
 
 if (WIN32)
 	link_directories(${CMAKE_SOURCE_DIR}/lib/mingw72/${CMAKE_BUILD_TYPE})
@@ -32,10 +32,10 @@ if (UNIX)
 endif (UNIX)
 
 add_subdirectory(3rdparty/soil)
+add_subdirectory(3rdparty/glm)
 
 add_subdirectory(src)
 add_subdirectory(data/shaders/gl)
 add_subdirectory(data/shaders/gles)
 add_subdirectory(data/models)
 add_subdirectory(data/textures)
-add_subdirectory(include/glm)
