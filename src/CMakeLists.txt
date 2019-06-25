@@ -32,6 +32,8 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_EXTENSIONS NO
 )
 
+set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/)
+
 add_dependencies(${PROJECT_NAME} SOIL)
 
 target_link_libraries(${PROJECT_NAME}
