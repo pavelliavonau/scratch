@@ -17,7 +17,7 @@ set(scratch_SRCS
 
 add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS})
 
-target_include_directories(${PROJECT_NAME} PUBLIC render;Scene;.;${GLFW_INCLUDE_DIRS})
+target_include_directories(${PROJECT_NAME} PUBLIC render;Scene;.)
 target_include_directories(${PROJECT_NAME} INTERFACE
 	$<INSTALL_INTERFACE:${SOIL_INCLUDE_DIRS}>
 )
@@ -41,5 +41,5 @@ target_link_libraries(${PROJECT_NAME}
 	glm
 	GLEW::GLEW
 	OpenGL::GL
-	${GLFW_LIBRARIES}
+	glfw
 )
