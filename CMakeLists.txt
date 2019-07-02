@@ -11,6 +11,7 @@ include_directories(3rdparty)
 
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
+find_package(glm REQUIRED)
 
 # Use GLFW
 if (UNIX)
@@ -24,7 +25,6 @@ elseif (WIN32)
 endif ()
 
 add_subdirectory(3rdparty/soil)
-add_subdirectory(3rdparty/glm)
 
 add_subdirectory(src)
 add_subdirectory(data/shaders/gl)

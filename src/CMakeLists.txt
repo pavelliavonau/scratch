@@ -38,6 +38,7 @@ add_dependencies(${PROJECT_NAME} SOIL)
 
 target_link_libraries(${PROJECT_NAME}
 	SOIL
+	glm
 	GLEW::GLEW
 	OpenGL::GL
 	${GLFW_LIBRARIES}
