@@ -37,9 +37,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${PROJECT_NAME})
 # Output directory
 ################################################################################
 string(CONCAT OUT_DIR
-	  $<$<CONFIG:Debug>:${CMAKE_SOURCE_DIR}/$<CONFIG>/>
-	$<$<CONFIG:Release>:${CMAKE_SOURCE_DIR}/$<CONFIG>/>
-	$<$<NOT:$<OR:$<CONFIG:Debug>,$<CONFIG:Release>>>:${CMAKE_SOURCE_DIR}/${CMAKE_VS_PLATFORM_NAME}/$<CONFIG>>
+    ${CMAKE_SOURCE_DIR}/lib/$<CONFIG>/
 )
 set_target_properties(${PROJECT_NAME} PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${OUT_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY ${OUT_DIR})
