@@ -1,6 +1,7 @@
 #include "ImportObj.h"
 
 #include <string>
+#include <cstring>
 #include <iostream>
 
 template<class T>
