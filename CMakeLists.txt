@@ -12,8 +12,6 @@ find_package(GLEW REQUIRED)
 find_package(glfw3 REQUIRED)
 find_package(glm REQUIRED)
 
-add_subdirectory(3rdparty/soil)
-
 add_subdirectory(src)
 add_subdirectory(data/shaders/gl)
 add_subdirectory(data/shaders/gles)

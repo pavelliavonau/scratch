@@ -18,9 +18,6 @@ set(scratch_SRCS
 add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS})
 
 target_include_directories(${PROJECT_NAME} PUBLIC render;Scene;.)
-target_include_directories(${PROJECT_NAME} INTERFACE
-	$<INSTALL_INTERFACE:${SOIL_INCLUDE_DIRS}>
-)
 
 add_definitions(
 	-DGLEW_STATIC
@@ -33,8 +30,6 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/)
-
-add_dependencies(${PROJECT_NAME} SOIL)
 
 target_link_libraries(${PROJECT_NAME}
 	SOIL
