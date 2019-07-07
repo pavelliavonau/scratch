@@ -15,13 +15,7 @@ set(scratch_SRCS
 	Scene/Light.cpp
 )
 
-add_executable(${PROJECT_NAME} ${DATA_FILES} ${scratch_SRCS})
-
-target_include_directories(${PROJECT_NAME} PUBLIC render;Scene;.)
-
-add_definitions(
-	-DGLEW_STATIC
-)
+add_executable(${PROJECT_NAME} ${scratch_SRCS})
 
 set_target_properties(${PROJECT_NAME} PROPERTIES
 	CXX_STANDARD 14
@@ -30,6 +24,16 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
 )
 
 set_target_properties(${PROJECT_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin/)
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+	render;
+	Scene;
+	.;
+)
+
+target_compile_definitions(${PROJECT_NAME} PRIVATE
+	"GLEW_STATIC"
+)
 
 target_link_libraries(${PROJECT_NAME}
 	SOIL
