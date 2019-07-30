@@ -4,7 +4,7 @@
 
 @set PATH=%PATH%;%MINGW_BIN%
 
-call cmake -B "build/MinGW Makefiles/%Config%/" -S . -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%Config% -DCMAKE_PREFIX_PATH="../scratch_sdk/" -DCMAKE_VERBOSE_MAKEFILE=1
+call cmake -B "build/MinGW Makefiles/%Config%/" -S . -G"MinGW Makefiles" -DCMAKE_BUILD_TYPE=%Config% -DCMAKE_PREFIX_PATH="%ProgramFiles(x86)%\glew" -DCMAKE_VERBOSE_MAKEFILE=1
 
 call cmake --build "build/MinGW Makefiles/%Config%/"
 
