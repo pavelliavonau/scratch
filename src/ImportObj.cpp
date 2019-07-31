@@ -19,7 +19,7 @@ bool OBJLoader::loadVertices(const char *path, std::vector<glm::vec3> &out_verti
 {
 	this->parseFace = [] (FILE * file, unsigned int* vertexIndex, unsigned int*, unsigned int*) -> bool
 	{
-		int matches = fscanf(file, "%d %d %d\n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
+		int matches = fscanf(file, "%u %u %u\n", &vertexIndex[0], &vertexIndex[1], &vertexIndex[2]);
 		if(matches == 3)
 			return true;
 		else
@@ -40,7 +40,7 @@ bool OBJLoader::loadVerticesUV(const char *path, std::vector<glm::vec3> &out_ver
 {
 	this->parseFace = [] (FILE * file, unsigned int* vertexIndex, unsigned int* uvIndex, unsigned int*) -> bool
 	{
-		int matches = fscanf(file, "%d/%d %d/%d %d/%d\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
+		int matches = fscanf(file, "%u/%u %u/%u %u/%u\n", &vertexIndex[0], &uvIndex[0], &vertexIndex[1], &uvIndex[1], &vertexIndex[2], &uvIndex[2]);
 		if(matches == 6)
 			return true;
 		else
@@ -62,7 +62,7 @@ bool OBJLoader::loadVerticesUVNormal(const char *path, std::vector<glm::vec3> &o
 {
 	this->parseFace = [] (FILE * file, unsigned int* vertexIndex, unsigned int* uvIndex, unsigned int* normalIndex) -> bool
 	{
-		int matches = fscanf(file, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
+		int matches = fscanf(file, "%u/%u/%u %u/%u/%u %u/%u/%u\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2] );
 		if(matches == 9)
 			return true;
 		else
@@ -84,7 +84,7 @@ bool OBJLoader::loadVerticesUVNormal(const char *path, std::vector<glm::vec3> &o
 bool OBJLoader::parseFile(const char *path)
 {
 	FILE * file = fopen(path, "r");
-	if( file == NULL )
+	if( file == nullptr )
 	{
 		printf("Impossible to open the file !\n");
 		fclose(file);
