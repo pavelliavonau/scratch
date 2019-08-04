@@ -273,14 +273,11 @@ int main(int argc, char** argv)
 	glEnable(GL_DEPTH_TEST);
 
 	{
-		Scene scene;
 		std::vector<glm::vec3> vertices;
 		std::vector<glm::vec2> uvs;
 		std::vector<glm::vec3> normals;
-		{
-			OBJLoader lo;
-			lo.loadVerticesUVNormal("models/cube.obj", vertices, uvs, normals);
-		}
+		OBJLoader::loadVerticesUVNormal("models/cube.obj", vertices, uvs, normals);
+
 		std::vector<glm::vec3> cubePositions = {
 			{ 0.0f,  0.0f,  0.0f},
 			{ 2.0f,  5.0f, -15.0f},
@@ -294,6 +291,7 @@ int main(int argc, char** argv)
 			{-1.3f,  1.0f, -1.5f}
 		};
 
+		Scene scene;
 		try
 		{
 			for(auto pos : cubePositions)

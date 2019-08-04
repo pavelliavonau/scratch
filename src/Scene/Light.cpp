@@ -10,10 +10,7 @@
 Light::Light() : shader("vertexSimple.glsl", "fragmentSimple.glsl")
 {
 	std::vector<glm::vec3> vertices;
-	{
-		OBJLoader lo;
-		lo.loadVertices("models/sphere.obj", vertices);
-	}
+	OBJLoader::loadVertices("models/sphere.obj", vertices);
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);

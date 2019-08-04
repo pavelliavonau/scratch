@@ -3,25 +3,29 @@
 
 #include <vector>
 #include <string>
-#include <functional>
 
 #include <glm/glm.hpp>
 
 class OBJLoader
 {
 public:
-	bool loadVertices(const char * path, std::vector <glm::vec3> & out_vertices);
-	bool loadVerticesUV(const char * path, std::vector <glm::vec3> & out_vertices, std::vector <glm::vec2> & out_uvs);
-	bool loadVerticesUVNormal(const char * path, std::vector <glm::vec3> & out_vertices, std::vector <glm::vec2> & out_uvs, std::vector <glm::vec3> & out_normals);
+	OBJLoader() = delete;
+
+	static bool loadVertices        (const char * path, std::vector <glm::vec3> & out_vertices);
+	static bool loadVerticesUV      (const char * path, std::vector <glm::vec3> & out_vertices, std::vector <glm::vec2> & out_uvs);
+	static bool loadVerticesUVNormal(const char * path, std::vector <glm::vec3> & out_vertices, std::vector <glm::vec2> & out_uvs, std::vector <glm::vec3> & out_normals);
 
 private:
-	bool parseFile(const char*path);
-	std::vector<unsigned int> vertexIndices, uvIndices, normalIndices;
-	std::vector<glm::vec3> temp_vertices;
-	std::vector<glm::vec2> temp_uvs;
-	std::vector<glm::vec3> temp_normals;
+	using faceReader_t = std::add_pointer<bool(FILE *, unsigned int*, unsigned int*, unsigned int*)>::type;
 
-	std::function<bool(FILE *, unsigned int*, unsigned int*, unsigned int*)> parseFace = [] (FILE *, unsigned int* , unsigned int* , unsigned int* ) -> bool { return true; };
+	static bool parseFile(const char*path,
+						  std::vector<glm::vec3>& outVertices,
+						  std::vector<glm::vec2>& outUVs,
+						  std::vector<glm::vec3>& outNormals);
+
+	static bool parseFaceVertices        (FILE *, unsigned int*, unsigned int*, unsigned int*);
+	static bool parseFaceVerticesUV      (FILE *, unsigned int*, unsigned int*, unsigned int*);
+	static bool parseFaceVerticesUVNormal(FILE *, unsigned int*, unsigned int*, unsigned int*);
 };
 
 #endif // IMPORTOBJ_H
