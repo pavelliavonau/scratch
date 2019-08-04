@@ -32,6 +32,9 @@ void DebugMessageCallback(GLenum source,
                           const GLchar* message,
                           const void* userParam)
 {
+	if (GL_DEBUG_SEVERITY_NOTIFICATION == severity)
+		return;
+
 	std::ostream& stream = GL_DEBUG_TYPE_ERROR == type ? std::cerr : std::cout;
 	stream << std::endl << "---------------------opengl-debug-callback-start------------" << std::endl;
 
