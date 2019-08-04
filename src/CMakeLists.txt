@@ -35,6 +35,14 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE
 	"GLEW_STATIC"
 )
 
+target_compile_options(${PROJECT_NAME} PRIVATE
+	$<$<CXX_COMPILER_ID:GNU>:
+		-Wall;
+		-Wextra;
+		-pedantic
+	>
+)
+
 target_link_libraries(${PROJECT_NAME}
 	SOIL
 	glm
