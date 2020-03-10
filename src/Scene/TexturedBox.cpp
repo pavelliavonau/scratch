@@ -94,15 +94,15 @@ TexturedBox::~TexturedBox()
 void TexturedBox::render(float time, const glm::mat4& PV)
 {
 	shader.Use();
-	GLint transformLocation = glGetUniformLocation(shader.Program, "transform");
+	GLint transformLocation = glGetUniformLocation(shader.program(), "transform");
 	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PV));
 
-	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
+	GLint useTextureRate = glGetUniformLocation(shader.program(), "useTextureRate");
 	glUniform1f(useTextureRate, .9f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture1"), 0);
+	glUniform1i(glGetUniformLocation(shader.program(), "ourTexture1"), 0);
 
 	// Draw container
 	glBindVertexArray(VAO);
@@ -110,7 +110,7 @@ void TexturedBox::render(float time, const glm::mat4& PV)
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture1);
-	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture1"), 0);
+	glUniform1i(glGetUniformLocation(shader.program(), "ourTexture1"), 0);
 
 	glUniform1f(useTextureRate, 0.1f);
 

@@ -41,10 +41,10 @@ void Light::render(float /*time*/, const glm::mat4 &PV)
 
 	auto PVM = PV * model;
 	shader.Use();
-	GLint transformLocation = glGetUniformLocation(shader.Program, "PVM");
+	GLint transformLocation = glGetUniformLocation(shader.program(), "PVM");
 	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PVM));
 	// Обновляем цвет формы
-	GLint vertexColorLocation = glGetUniformLocation(shader.Program, "simpleColor");
+	GLint vertexColorLocation = glGetUniformLocation(shader.program(), "simpleColor");
 	glUniform4f(vertexColorLocation, 1.f, 1.f, 1.0f, 1.0f);
 
 	glBindVertexArray(VAO);

@@ -1,37 +1,23 @@
 #include "Shader.h"
 
-#include <string>
+#include <iostream>
 #include <stdexcept>
-#include "UserDebugInfo.h"
+#include <string>
+
 #include "ShaderManager.h"
+#include "UserDebugInfo.h"
 
 Shader::Shader(const GLchar* vertexPath, const GLchar* fragmentPath)
 {
-	GLuint vertex = ShaderManager::instance().get_vertex_shader(vertexPath);
-	GLuint fragment = ShaderManager::instance().get_fragment_shader(fragmentPath);
-
-	{
-		UserDebugInfo udi("path: " + std::string(vertexPath) + "\n" + std::string(fragmentPath));
-		this->Program = glCreateProgram();
-		glAttachShader(this->Program, vertex);
-		glAttachShader(this->Program, fragment);
-		glLinkProgram(this->Program);
-		GLint success;
-		glGetProgramiv(this->Program, GL_LINK_STATUS, &success);
-		if(!success)
-		{
-			glDeleteProgram(this->Program);
-			throw std::runtime_error("linking shader program error");
-		}
-	}
-}
-
-Shader::~Shader()
-{
-	glDeleteProgram(this->Program);
+	this->Program = ShaderManager::instance().get_shader_program(vertexPath, fragmentPath);
 }
 
 void Shader::Use()
 {
-	glUseProgram(this->Program);
+	glUseProgram(reinterpret_cast<size_t>(this->Program.get()));
+}
+
+GLuint Shader::program()
+{
+	return reinterpret_cast<size_t>(this->Program.get());
 }

@@ -92,17 +92,17 @@ void TexturedMesh::render(float time, const glm::mat4& PV)
 	model = glm::rotate(model, glm::radians((GLfloat)(time + addr) * 50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
 
 	shader.Use();
-	GLint projectionViewLocation = glGetUniformLocation(shader.Program, "projectionView");
+	GLint projectionViewLocation = glGetUniformLocation(shader.program(), "projectionView");
 	glUniformMatrix4fv(projectionViewLocation, 1, GL_FALSE, glm::value_ptr(PV));
-	GLint modelLocation = glGetUniformLocation(shader.Program, "model");
+	GLint modelLocation = glGetUniformLocation(shader.program(), "model");
 	glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
-	GLint useTextureRate = glGetUniformLocation(shader.Program, "useTextureRate");
+	GLint useTextureRate = glGetUniformLocation(shader.program(), "useTextureRate");
 	glUniform1f(useTextureRate, 0.0f);
 
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture);
-	glUniform1i(glGetUniformLocation(shader.Program, "ourTexture1"), 0);
+	glUniform1i(glGetUniformLocation(shader.program(), "ourTexture1"), 0);
 
 	// Draw container
 	glBindVertexArray(VAO);

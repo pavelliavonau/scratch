@@ -302,9 +302,6 @@ int main(int argc, char** argv)
 			}
 
 			scene.addObject(new Light());
-
-			ShaderManager::instance().clean_shaders();
-
 		} catch (const std::exception& e) {
 			std::cout << e.what();
 		}

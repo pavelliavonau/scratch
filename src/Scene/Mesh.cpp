@@ -30,11 +30,11 @@ Mesh::~Mesh()
 void Mesh::render(float time, const glm::mat4& PV)
 {
 	shader.Use();
-	GLint transformLocation = glGetUniformLocation(shader.Program, "PVM");
+	GLint transformLocation = glGetUniformLocation(shader.program(), "PVM");
 	glUniformMatrix4fv(transformLocation, 1, GL_FALSE, glm::value_ptr(PV));
 	// Обновляем цвет формы
 	GLdouble greenValue = ((this->blinking ? sin(time) : 1) / 2) + 0.5;
-	GLint vertexColorLocation = glGetUniformLocation(shader.Program, "simpleColor");
+	GLint vertexColorLocation = glGetUniformLocation(shader.program(), "simpleColor");
 	glUniform4f(vertexColorLocation, 0.0f, static_cast<GLfloat>(greenValue), 0.0f, 1.0f);
 
 	glBindVertexArray(VAO);
